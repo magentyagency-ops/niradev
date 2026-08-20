@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Nira Dev — brief, tâches et revue de code pour les équipes techniques">
+  <title>Nira Dev</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Nira Dev">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <!-- ------------------------------------------------------- connexion -->
+  <div class="auth-screen" id="authScreen" hidden>
+    <section class="auth-card glass">
+      <div class="auth-brand">
+        <span class="brand-name">Nira<b>Dev</b></span>
+      </div>
+      <h1>Connexion</h1>
+      <p class="auth-intro">Espace de travail de l'équipe technique. Les comptes sont créés par un administrateur.</p>
+      <form id="loginForm">
+        <div class="field-group"><label for="loginEmail">Email</label>
+          <input class="field" id="loginEmail" name="email" type="email" autocomplete="email" required placeholder="prenom@entreprise.fr"></div>
+        <div class="field-group"><label for="loginPassword">Mot de passe</label>
+          <input class="field" id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••"></div>
+        <p class="auth-error" id="authError" hidden></p>
+        <button class="btn primary auth-submit" type="submit"><i class="ri-login-circle-line"></i>Se connecter</button>
+      </form>
+      <button class="btn ghost auth-reset" type="button" id="resetPassword">Mot de passe oublié ?</button>
+    </section>
+  </div>
+
+  <div class="app" id="app" hidden>
+    <nav class="topbar glass" aria-label="Navigation principale">
+      <div class="brand">
+        <span class="brand-name">Nira<b>Dev</b></span>
+      </div>
+
+      <!-- Sélecteur de projet : tout le reste de l'application s'y rapporte. -->
+      <div class="project-switch" id="projectSwitch">
+        <button class="switch-btn" id="projectSwitchToggle" type="button">
+          <span class="project-dot" id="projectSwitchDot"></span>
+          <span class="switch-id">
+            <b id="projectSwitchName">Aucun projet</b>
+            <span id="projectSwitchMeta">—</span>
+          </span>
+          <i class="ri-arrow-down-s-line"></i>
+        </button>
+        <div class="switch-panel glass">
+          <small>Projets</small>
+          <div class="switch-list" id="projectSwitchList"></div>
+          <button class="btn ghost manager-only" type="button" data-action="new-project" hidden><i class="ri-add-line"></i>Nouveau projet</button>
+        </div>
+      </div>
+
+      <div class="nav" id="nav">
+        <button class="nav-btn active" data-view="dashboard"><i class="ri-dashboard-3-line"></i><span>Tableau de bord</span></button>
+        <button class="nav-btn" data-view="projects"><i class="ri-folder-3-line"></i><span>Projets</span></button>
+        <button class="nav-btn" data-view="brief"><i class="ri-file-text-line"></i><span>Brief</span></button>
+        <button class="nav-btn" data-view="board"><i class="ri-kanban-view-2"></i><span>Board</span></button>
+        <button class="nav-btn" data-view="tasks"><i class="ri-list-check-3"></i><span>Tâches</span></button>
+        <button class="nav-btn" data-view="reviews"><i class="ri-code-box-line"></i><span>Revues</span></button>
+        <button class="nav-btn" data-view="assistant"><i class="ri-robot-2-line"></i><span>Assistant</span></button>
+        <button class="nav-btn admin-only" data-view="admin" hidden><i class="ri-shield-user-line"></i><span>Comptes</span></button>
+      </div>
+
+      <div class="account-wrap" id="accountWrap">
+        <button class="account-btn" id="accountToggle" type="button" aria-label="Mon compte">
+          <span class="account-avatar" id="accountAvatar">?</span>
+          <span class="account-id">
+            <b id="accountName">—</b>
+            <span id="accountRole">—</span>
+          </span>
+        </button>
+        <div class="account-panel glass">
+          <small>Compte</small>
+          <p class="account-email" id="accountEmail">—</p>
+          <button class="btn" type="button" id="editProfile"><i class="ri-user-settings-line"></i>Mon profil</button>
+          <button class="btn" type="button" id="changePassword"><i class="ri-key-2-line"></i>Changer mon mot de passe</button>
+          <button class="btn danger" type="button" id="signOut"><i class="ri-logout-box-r-line"></i>Se déconnecter</button>
+        </div>
+      </div>
+
+      <div class="theme-wrap" id="themeWrap">
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Changer de thème"><i class="ri-contrast-2-line"></i></button>
+        <div class="theme-panel glass">
+          <small>Apparence</small>
+          <div class="theme-grid" id="themeGrid">
+            <button class="theme-option" data-theme="light"><span class="swatch light"></span>Clair</button>
+            <button class="theme-option" data-theme="midnight"><span class="swatch midnight"></span>Minuit</button>
+            <button class="theme-option" data-theme="ocean"><span class="swatch ocean"></span>Océan</button>
+            <button class="theme-option" data-theme="sunset"><span class="swatch sunset"></span>Coucher</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <!-- ------------------------------------------------ tableau de bord -->
+      <section class="view active" id="view-dashboard">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Vue d'ensemble</p>
+            <h1>L'état de tes projets.</h1>
+            <p>Avancement, blocages et livraisons en attente de revue, pour tout ce que ton compte peut voir.</p>
+          </div>
+          <div class="head-actions">
+            <div class="section-project-picker" id="dashboardProjectPicker"></div>
+            <button class="btn" data-go="board"><i class="ri-kanban-view-2"></i>Ouvrir le board</button>
+            <button class="btn primary manager-only" data-action="new-task" hidden><i class="ri-add-line"></i>Nouvelle tâche</button>
+            <button class="btn primary dev-only" data-action="new-submission"><i class="ri-upload-cloud-2-line"></i>Livrer du code</button>
+          </div>
+        </header>
+
+        <section class="summary-hero glass">
+          <div class="ai-orb"><i class="ri-sparkling-2-line"></i></div>
+          <div>
+            <small>Point d'avancement</small>
+            <p id="standupText">Demande un point d'avancement pour obtenir une lecture synthétique de la situation.</p>
+          </div>
+          <button class="btn" type="button" id="standupRefresh"><i class="ri-refresh-line"></i>Générer</button>
+        </section>
+
+        <div class="metrics" id="dashboardMetrics"></div>
+
+        <div class="grid two" style="margin-top:18px">
+          <section class="card glass">
+            <div class="card-head">
+              <div><h2>Mes tâches</h2><p>Ce qui t'est assigné, du plus urgent au moins urgent.</p></div>
+              <button class="btn" data-go="tasks">Voir tout</button>
+            </div>
+            <div id="dashboardTasks"></div>
+          </section>
+          <section class="card glass">
+            <div class="card-head">
+              <div><h2>Livraisons à examiner</h2><p>Code soumis, en attente ou en retour de revue.</p></div>
+              <button class="btn" data-go="reviews">Revues</button>
+            </div>
+            <div id="dashboardSubmissions"></div>
+          </section>
+        </div>
+
+        <div class="grid two" style="margin-top:18px">
+          <section class="card glass">
+            <div class="card-head">
+              <div><h2>Avancement par projet</h2><p>Part des tâches terminées sur chaque projet actif.</p></div>
+              <button class="btn" data-go="projects">Projets</button>
+            </div>
+            <div id="dashboardProjects"></div>
+          </section>
+          <section class="card glass">
+            <div class="card-head">
+              <div><h2>Activité de l'équipe</h2><p>Les derniers mouvements sur tes projets.</p></div>
+            </div>
+            <div id="dashboardActivity"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ----------------------------------------------------------- brief -->
+      <section class="view" id="view-brief">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Cadrage</p>
+            <h1 id="briefProjectName">Brief projet</h1>
+            <p>Le document de cadrage et cahier des charges du projet à consulter ou télécharger.</p>
+          </div>
+          <div class="head-actions">
+            <div class="section-project-picker" id="briefProjectPicker"></div>
+            <button class="btn primary" type="button" id="briefDownloadBtn" hidden><i class="ri-download-2-line"></i>Télécharger le brief</button>
+            <button class="btn manager-only" type="button" id="briefUploadBtn" hidden><i class="ri-upload-2-line"></i>Changer le brief PDF</button>
+          </div>
+        </header>
+        <div id="briefBody"></div>
+      </section>
+
+      <!-- --------------------------------------------------------- projets -->
+      <section class="view" id="view-projects">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Portefeuille</p>
+            <h1>Projets</h1>
+            <p>Tous les projets auxquels ton compte a accès, avec leur équipe et leur avancement.</p>
+          </div>
+          <div class="head-actions">
+            <input class="field search" id="projectSearch" type="search" placeholder="Rechercher un projet…">
+            <button class="btn primary manager-only" type="button" data-action="new-project" hidden><i class="ri-add-line"></i>Nouveau projet</button>
+          </div>
+        </header>
+        <div id="projectGrid"></div>
+      </section>
+
+      <!-- ----------------------------------------------------------- board -->
+      <section class="view" id="view-board">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Avancement</p>
+            <h1 id="boardProjectName">Board</h1>
+            <p>Glisse une carte d'une colonne à l'autre pour faire avancer une tâche. Chaque changement est journalisé.</p>
+          </div>
+          <div class="head-actions">
+            <div class="section-project-picker" id="boardProjectPicker"></div>
+            <input class="field search" id="boardSearch" type="search" placeholder="Rechercher une tâche…">
+            <div class="owner-filter" id="assigneeFilter">
+              <button class="btn" type="button" id="assigneeFilterToggle">
+                <i class="ri-group-line"></i><span id="assigneeFilterLabel">Toute l'équipe</span><i class="ri-arrow-down-s-line"></i>
+              </button>
+              <div class="owner-panel glass">
+                <small>Afficher les tâches de</small>
+                <div class="owner-list" id="assigneeFilterList"></div>
+              </div>
+            </div>
+            <button class="btn manager-only" type="button" id="planTasksBtn" hidden><i class="ri-sparkling-2-line"></i>Découper le brief</button>
+            <button class="btn primary manager-only" type="button" data-action="new-task" hidden><i class="ri-add-line"></i>Nouvelle tâche</button>
+          </div>
+        </header>
+        <div class="board" id="board"></div>
+      </section>
+
+      <!-- ---------------------------------------------------------- tâches -->
+      <section class="view" id="view-tasks">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Charge de travail</p>
+            <h1>Tâches</h1>
+            <p>Vue tableau, triable et filtrable, sur l'ensemble des projets visibles.</p>
+          </div>
+          <div class="head-actions">
+            <div class="section-project-picker" id="taskProjectPicker"></div>
+            <input class="field search" id="taskSearch" type="search" placeholder="Rechercher…">
+            <select class="field" id="taskScopeFilter">
+              <option value="mine">Mes tâches</option>
+              <option value="project">Projet sélectionné</option>
+              <option value="all">Tous les projets</option>
+            </select>
+            <select class="field" id="taskStatusFilter"></select>
+          </div>
+        </header>
+        <section class="card glass">
+          <div class="table-wrap">
+            <table class="table" id="taskTable">
+              <thead>
+                <tr>
+                  <th data-sort="seq">Réf.</th>
+                  <th data-sort="title">Tâche</th>
+                  <th data-sort="project">Projet</th>
+                  <th data-sort="status">Statut</th>
+                  <th data-sort="priority">Priorité</th>
+                  <th data-sort="assignee">Assigné à</th>
+                  <th data-sort="due_date">Échéance</th>
+                  <th data-sort="updated_at">Activité</th>
+                </tr>
+              </thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+          <div id="taskTableEmpty"></div>
+        </section>
+      </section>
+
+      <!-- ---------------------------------------------------------- revues -->
+      <section class="view" id="view-reviews">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Contrôle qualité</p>
+            <h1>Revues de code</h1>
+            <p>Chaque fonctionnalité terminée est livrée ici, puis confrontée au brief et aux critères d'acceptation.</p>
+          </div>
+          <div class="head-actions">
+            <div class="section-project-picker" id="reviewProjectPicker"></div>
+            <select class="field" id="reviewScopeFilter">
+              <option value="project">Projet sélectionné</option>
+              <option value="mine">Mes livraisons</option>
+              <option value="all">Toutes les livraisons</option>
+            </select>
+            <button class="btn primary" type="button" data-action="new-submission"><i class="ri-upload-cloud-2-line"></i>Livrer du code</button>
+          </div>
+        </header>
+        <div class="metrics" id="reviewMetrics"></div>
+        <div id="submissionList" style="margin-top:18px"></div>
+      </section>
+
+      <!-- ------------------------------------------------------- assistant -->
+      <section class="view" id="view-assistant">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Aide en ligne</p>
+            <h1>Assistant technique</h1>
+            <p>Il connaît le brief, les tâches et l'équipe du projet sélectionné. Pose-lui tes questions avant de bloquer une heure dessus.</p>
+          </div>
+          <div class="head-actions">
+            <div class="section-project-picker" id="assistantProjectPicker"></div>
+            <button class="btn" type="button" id="chatClear"><i class="ri-delete-bin-line"></i>Effacer le fil</button>
+          </div>
+        </header>
+        <section class="chat-shell glass">
+          <div class="chat-log" id="chatLog"></div>
+          <div class="chat-suggestions" id="chatSuggestions"></div>
+          <form class="chat-form" id="chatForm">
+            <textarea class="field" id="chatInput" rows="1" placeholder="Ex. : que dit le brief sur la gestion des erreurs de paiement ?" required></textarea>
+            <button class="btn primary" type="submit" id="chatSend"><i class="ri-send-plane-2-line"></i></button>
+          </form>
+        </section>
+      </section>
+
+      <!-- ---------------------------------------------------- administration -->
+      <section class="view" id="view-admin">
+        <header class="page-head">
+          <div>
+            <p class="eyebrow">Administration</p>
+            <h1>Comptes de l'équipe</h1>
+            <p>Crée les accès, désigne les managers de projet et suis la charge de chacun.</p>
+          </div>
+          <div class="head-actions">
+            <button class="btn" type="button" id="refreshAccounts"><i class="ri-refresh-line"></i>Actualiser</button>
+            <button class="btn primary" type="button" data-action="new-account"><i class="ri-user-add-line"></i>Nouveau compte</button>
+          </div>
+        </header>
+        <div class="metrics" id="adminMetrics"></div>
+        <section class="card glass" style="margin-top:18px">
+          <div class="card-head">
+            <div><h2>Comptes</h2><p>Un développeur ne voit que les projets sur lesquels il est affecté ; un admin voit tout.</p></div>
+          </div>
+          <div id="accountList"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <section class="drawer-panel glass" id="drawerPanel"></section>
+  </aside>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-panel glass" id="modalPanel"></section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
