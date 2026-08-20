@@ -9,9 +9,6 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
  * compte appelant, puis autorisé en relisant son rôle en base.
  */
 
-const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? ''
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
-
 export class HttpError extends Error {
   constructor(
     readonly status: number,
@@ -22,10 +19,13 @@ export class HttpError extends Error {
 }
 
 export const admin = (): SupabaseClient => {
+  const supabaseUrl = (process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? '').trim().replace(/^['"]|['"]$/g, '')
+  const serviceRoleKey = (process.env.SUPABASE_SERVICE_ROLE_KEY ?? '').trim().replace(/^['"]|['"]$/g, '')
+
   if (!supabaseUrl || !serviceRoleKey) {
     throw new HttpError(
       500,
-      "Configuration serveur incomplète : SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être définis dans les variables d'environnement.",
+      "Configuration serveur incomplète : SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être définis dans les variables d'environnement Vercel.",
     )
   }
   return createClient(supabaseUrl, serviceRoleKey, {

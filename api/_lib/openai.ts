@@ -11,7 +11,7 @@ import { HttpError } from './supabase.js'
 const API_URL = 'https://api.openai.com/v1/chat/completions'
 
 const apiKey = (): string => {
-  const key = process.env.OPENAI_API_KEY ?? ''
+  const key = (process.env.OPENAI_API_KEY ?? '').trim().replace(/^['"]|['"]$/g, '')
   if (!key) {
     throw new HttpError(
       503,
@@ -21,7 +21,7 @@ const apiKey = (): string => {
   return key
 }
 
-const primaryModel = (): string => process.env.OPENAI_MODEL || 'gpt-4o'
+const primaryModel = (): string => (process.env.OPENAI_MODEL ?? 'gpt-4o').trim().replace(/^['"]|['"]$/g, '') || 'gpt-4o'
 
 /** Modèle de repli si celui demandé n'est pas accessible avec cette clé. */
 const FALLBACK_MODEL = 'gpt-4o-mini'
