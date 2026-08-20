@@ -24,10 +24,18 @@ export interface ChatTurn {
   content: string
 }
 
+export interface ChatResponse {
+  reply: string
+  model: string
+  created_tasks?: Task[]
+  updated_tasks?: Task[]
+  deleted_task_ids?: string[]
+}
+
 export const aiApi = {
-  /** Assistant conversationnel, ancré sur le brief et les tâches du projet. */
+  /** Assistant conversationnel, capable d'analyser le brief et d'agir sur le board. */
   chat: (input: { projectId: string | null; messages: ChatTurn[] }) =>
-    post<{ reply: string; model: string }>('/api/ai/chat', input),
+    post<ChatResponse>('/api/ai/chat', input),
 
   /** Revue de code : confronte le code livré au brief et aux critères de la tâche. */
   review: (input: { submissionId: string }) => post<{ review: Review }>('/api/ai/review', input),

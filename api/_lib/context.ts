@@ -74,8 +74,8 @@ export async function loadProjectContext(
   const taskLines = (tasks ?? [])
     .map(
       (task) =>
-        `- [${project?.code ?? 'PRJ'}-${task.seq}] ${task.title} · statut ${task.status} · priorité ${task.priority} · ${nameOf(task.assignee_id as string)}${
-          task.blocked_reason ? ` · bloqué : ${task.blocked_reason}` : ''
+        `- [id: ${task.id}, ref: ${project?.code ?? 'PRJ'}-${task.seq}] ${task.title} · statut: ${task.status} · priorité: ${task.priority} · assigné: ${nameOf(task.assignee_id as string)}${
+          task.blocked_reason ? ` · bloqué: ${task.blocked_reason}` : ''
         }`,
     )
     .join('\n')
@@ -83,7 +83,7 @@ export async function loadProjectContext(
   const teamLines = (people ?? [])
     .map((person) => {
       const membership = (members ?? []).find((member) => member.user_id === person.id)
-      return `- ${person.full_name || person.email}${person.job_title ? ` (${person.job_title})` : ''} — ${membership?.role_in_project ?? 'dev'}`
+      return `- [id: ${person.id}] ${person.full_name || person.email}${person.job_title ? ` (${person.job_title})` : ''} — ${membership?.role_in_project ?? 'dev'}`
     })
     .join('\n')
 

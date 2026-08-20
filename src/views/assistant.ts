@@ -1,12 +1,20 @@
 import { aiApi, type ChatTurn } from '../aiApi.js'
 import { api } from '../api.js'
 import { setupSectionProjectPicker } from '../projectPicker.js'
-import { currentProject, latestBrief, setCurrentProject, state, subscribe } from '../store.js'
+import {
+  currentProject,
+  latestBrief,
+  removeTask,
+  setCurrentProject,
+  state,
+  subscribe,
+  upsertTask,
+} from '../store.js'
 import type { ChatMessage } from '../types.js'
 import { $, escapeHtml, initialsOf, renderMarkdown, toast, viewIsActive } from '../ui.js'
 
 /**
- * Assistant technique.
+ * Assistant technique et chef de projet IA.
  *
  * Le fil est privé à chaque compte et rattaché au projet courant : changer de
  * projet change de conversation, ce qui évite de mélanger deux cadrages.
@@ -17,16 +25,16 @@ let loadedProjectId: string | null | undefined
 let sending = false
 
 const SUGGESTIONS_WITH_BRIEF = [
+  'Ajoute une tâche "Intégration paiement" assignée à moi en priorité haute',
+  'Passe la tâche en cours sur le board',
   'Que dit le brief sur ce que je dois livrer exactement ?',
-  "Quels sont les critères d'acceptation de mes tâches en cours ?",
-  "Qu'est-ce qui est explicitement hors périmètre ?",
-  'Par quoi devrais-je commencer aujourd’hui ?',
+  'Quelles sont les tâches de l’équipe ?',
 ]
 
 const SUGGESTIONS_WITHOUT_BRIEF = [
+  'Crée une tâche "Configuration environnement" sur le board',
   'Comment structurer ce projet techniquement ?',
   'Explique-moi cette erreur TypeScript',
-  'Quelle stratégie de tests pour cette stack ?',
 ]
 
 export function initAssistant(): void {
@@ -148,7 +156,23 @@ async function send(raw: string): Promise<void> {
 
   try {
     void api.saveChatMessage(state.currentProjectId, 'user', content).catch(() => undefined)
-    const { reply } = await aiApi.chat({ projectId: state.currentProjectId, messages: turns })
+    const res = await aiApi.chat({ projectId: state.currentProjectId, messages: turns })
+    const reply = res.reply
+
+    // Synchronisation en direct des tâches créées/modifiées sur le board
+    if (res.created_tasks && res.created_tasks.length > 0) {
+      res.created_tasks.forEach((task) => upsertTask(task))
+      toast(`${res.created_tasks.length} tâche(s) ajoutée(s) au board !`)
+    }
+    if (res.updated_tasks && res.updated_tasks.length > 0) {
+      res.updated_tasks.forEach((task) => upsertTask(task))
+      toast(`${res.updated_tasks.length} tâche(s) mise(s) à jour sur le board !`)
+    }
+    if (res.deleted_task_ids && res.deleted_task_ids.length > 0) {
+      res.deleted_task_ids.forEach((id) => removeTask(id))
+      toast(`${res.deleted_task_ids.length} tâche(s) retirée(s) du board.`)
+    }
+
     const saved = await api
       .saveChatMessage(state.currentProjectId, 'assistant', reply)
       .catch(() => ({
