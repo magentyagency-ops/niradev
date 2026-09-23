@@ -167,12 +167,31 @@ export interface ActivityEntry {
   created_at: string
 }
 
-export interface ChatMessage {
+export interface ChatSession {
   id: string
   project_id: string | null
   user_id: string
+  title: string
+  created_at: string
+  updated_at: string
+}
+
+/** Trace des actions menées sur le board, affichée sous la réponse. */
+export interface ChatMessageMeta {
+  created?: { id: string; seq: number; title: string }[]
+  updated?: { id: string; seq: number; title: string }[]
+  deleted?: string[]
+  model?: string
+}
+
+export interface ChatMessage {
+  id: string
+  project_id: string | null
+  session_id?: string | null
+  user_id: string
   role: 'user' | 'assistant'
   content: string
+  meta?: ChatMessageMeta | null
   created_at: string
 }
 

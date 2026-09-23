@@ -27,6 +27,7 @@ export interface ChatTurn {
 export interface ChatResponse {
   reply: string
   model: string
+  title?: string
   created_tasks?: Task[]
   updated_tasks?: Task[]
   deleted_task_ids?: string[]
@@ -34,7 +35,7 @@ export interface ChatResponse {
 
 export const aiApi = {
   /** Assistant conversationnel, capable d'analyser le brief et d'agir sur le board. */
-  chat: (input: { projectId: string | null; messages: ChatTurn[] }) =>
+  chat: (input: { projectId: string | null; messages: ChatTurn[]; wantTitle?: boolean }) =>
     post<ChatResponse>('/api/ai/chat', input),
 
   /** Revue de code : confronte le code livré au brief et aux critères de la tâche. */

@@ -23,6 +23,7 @@ import {
   initialsOf,
   PRIORITIES,
   relativeTime,
+  renderMarkdown,
   statusMeta,
   TASK_KINDS,
   TASK_STATUSES,
@@ -92,7 +93,7 @@ function render(task: Task): void {
 
     ${
       task.description
-        ? `<p class="section-title">Description</p><div class="brief-text selectable" style="font-size:12px;line-height:1.7;white-space:pre-wrap">${escapeHtml(task.description)}</div>`
+        ? `<p class="section-title">Description</p><div class="brief-text selectable md-body" style="font-size:12px;line-height:1.7">${renderMarkdown(task.description)}</div>`
         : ''
     }
 

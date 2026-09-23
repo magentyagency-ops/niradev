@@ -54,7 +54,7 @@ Chaque appel est une requête OpenAI facturée sur la clé configurée. Ordre de
 
 | Fonction | Contexte envoyé | Coût indicatif |
 | --- | --- | --- |
-| Assistant (une question) | brief + tâches + 12 derniers tours | quelques centimes |
+| Assistant (une question) | brief + tâches + 30 derniers tours de la conversation | quelques centimes |
 | Revue de code | brief + tâche + code (plafonné à 120 000 caractères) | le plus coûteux : proportionnel à la taille du code |
 | Structurer des notes / découper le brief | notes ou brief | faible |
 | Point d'avancement | jusqu'à 5 projets | faible |

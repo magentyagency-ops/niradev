@@ -76,6 +76,8 @@ export async function loadProjectContext(
       (task) =>
         `- [id: ${task.id}, ref: ${project?.code ?? 'PRJ'}-${task.seq}] ${task.title} · statut: ${task.status} · priorité: ${task.priority} · assigné: ${nameOf(task.assignee_id as string)}${
           task.blocked_reason ? ` · bloqué: ${task.blocked_reason}` : ''
+        }${task.due_date ? ` · échéance: ${task.due_date}` : ''}${
+          task.description ? `\n    ↳ ${clip(String(task.description).replace(/\s+/g, ' '), 220)}` : ''
         }`,
     )
     .join('\n')

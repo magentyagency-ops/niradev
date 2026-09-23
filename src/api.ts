@@ -5,6 +5,8 @@ import type {
   AppState,
   Brief,
   ChatMessage,
+  ChatMessageMeta,
+  ChatSession,
   Profile,
   Project,
   ProjectMember,
@@ -461,30 +463,73 @@ export const api = {
 
   /* ------------------------------------------------------------ assistant */
 
-  async loadChat(projectId: string | null): Promise<ChatMessage[]> {
-    const query = supabase.from('chat_messages').select('*').order('created_at', { ascending: true }).limit(100)
+  async listChatSessions(projectId: string | null): Promise<ChatSession[]> {
+    const query = supabase.from('chat_sessions').select('*').order('updated_at', { ascending: false }).limit(200)
     const { data, error } = projectId ? await query.eq('project_id', projectId) : await query.is('project_id', null)
+    fail('Chargement des conversations', error)
+    return (data ?? []) as ChatSession[]
+  },
+
+  async createChatSession(projectId: string | null, title = 'Nouvelle conversation'): Promise<ChatSession> {
+    const userId = await currentUserId()
+    if (!userId) throw new Error('Session expirée.')
+    const { data, error } = await supabase
+      .from('chat_sessions')
+      .insert({ project_id: projectId, user_id: userId, title })
+      .select()
+      .single()
+    fail('Création de la conversation', error)
+    return data as ChatSession
+  },
+
+  async updateChatSession(id: string, changes: Partial<Pick<ChatSession, 'title'>>): Promise<ChatSession> {
+    const { data, error } = await supabase
+      .from('chat_sessions')
+      .update({ ...changes, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single()
+    fail('Mise à jour de la conversation', error)
+    return data as ChatSession
+  },
+
+  async deleteChatSession(id: string): Promise<void> {
+    const { error } = await supabase.from('chat_sessions').delete().eq('id', id)
+    fail('Suppression de la conversation', error)
+  },
+
+  async loadChat(sessionId: string): Promise<ChatMessage[]> {
+    const { data, error } = await supabase
+      .from('chat_messages')
+      .select('*')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: true })
+      .limit(500)
     fail("Chargement de l'historique", error)
     return (data ?? []) as ChatMessage[]
   },
 
-  async saveChatMessage(projectId: string | null, role: 'user' | 'assistant', content: string): Promise<ChatMessage> {
+  async deleteChatMessage(id: string): Promise<void> {
+    const { error } = await supabase.from('chat_messages').delete().eq('id', id)
+    fail('Suppression du message', error)
+  },
+
+  async saveChatMessage(
+    session: ChatSession,
+    role: 'user' | 'assistant',
+    content: string,
+    meta: ChatMessageMeta = {},
+  ): Promise<ChatMessage> {
     const userId = await currentUserId()
     if (!userId) throw new Error('Session expirée.')
     const { data, error } = await supabase
       .from('chat_messages')
-      .insert({ project_id: projectId, user_id: userId, role, content })
+      .insert({ project_id: session.project_id, session_id: session.id, user_id: userId, role, content, meta })
       .select()
       .single()
     fail('Enregistrement du message', error)
+    // La conversation remonte en tête de liste, comme dans un chat classique.
+    void supabase.from('chat_sessions').update({ updated_at: new Date().toISOString() }).eq('id', session.id).then(() => undefined)
     return data as ChatMessage
-  },
-
-  async clearChat(projectId: string | null): Promise<void> {
-    const userId = await currentUserId()
-    if (!userId) return
-    const query = supabase.from('chat_messages').delete().eq('user_id', userId)
-    const { error } = projectId ? await query.eq('project_id', projectId) : await query.is('project_id', null)
-    fail("Effacement de l'historique", error)
   },
 }

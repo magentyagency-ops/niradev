@@ -291,25 +291,34 @@
 
       <!-- ------------------------------------------------------- assistant -->
       <section class="view" id="view-assistant">
-        <header class="page-head">
-          <div>
-            <p class="eyebrow">Aide en ligne</p>
-            <h1>Assistant technique</h1>
-            <p>Il connaît le brief, les tâches et l'équipe du projet sélectionné. Pose-lui tes questions avant de bloquer une heure dessus.</p>
-          </div>
-          <div class="head-actions">
+        <div class="ai-app glass" id="aiApp">
+          <aside class="ai-sidebar" id="aiSidebar">
+            <div class="ai-side-head">
+              <button class="btn primary ai-new" type="button" id="chatNew"><i class="ri-edit-box-line"></i>Nouvelle conversation</button>
+              <button class="icon-btn ai-side-close" type="button" id="chatSideClose" aria-label="Fermer"><i class="ri-close-line"></i></button>
+            </div>
             <div class="section-project-picker" id="assistantProjectPicker"></div>
-            <button class="btn" type="button" id="chatClear"><i class="ri-delete-bin-line"></i>Effacer le fil</button>
+            <input class="field ai-search" id="chatSearch" type="search" placeholder="Rechercher une conversation…" />
+            <nav class="ai-sessions" id="chatSessions"></nav>
+          </aside>
+          <div class="ai-main">
+            <header class="ai-topbar">
+              <button class="icon-btn ai-side-toggle" type="button" id="chatSideOpen" aria-label="Conversations"><i class="ri-menu-2-line"></i></button>
+              <div class="ai-title">
+                <b id="chatTitle">Nouvelle conversation</b>
+                <span id="chatSubtitle"></span>
+              </div>
+            </header>
+            <div class="ai-log" id="chatLog"></div>
+            <div class="ai-composer-wrap">
+              <form class="ai-composer" id="chatForm">
+                <textarea id="chatInput" rows="1" placeholder="Écris à Nira… (Maj+Entrée pour un saut de ligne)"></textarea>
+                <button class="ai-send" type="submit" id="chatSend" aria-label="Envoyer"><i class="ri-arrow-up-line"></i></button>
+              </form>
+              <p class="ai-disclaimer">Nira peut agir sur le board du projet sélectionné. Vérifie les informations importantes.</p>
+            </div>
           </div>
-        </header>
-        <section class="chat-shell glass">
-          <div class="chat-log" id="chatLog"></div>
-          <div class="chat-suggestions" id="chatSuggestions"></div>
-          <form class="chat-form" id="chatForm">
-            <textarea class="field" id="chatInput" rows="1" placeholder="Ex. : que dit le brief sur la gestion des erreurs de paiement ?" required></textarea>
-            <button class="btn primary" type="submit" id="chatSend"><i class="ri-send-plane-2-line"></i></button>
-          </form>
-        </section>
+        </div>
       </section>
 
       <!-- ---------------------------------------------------- administration -->
