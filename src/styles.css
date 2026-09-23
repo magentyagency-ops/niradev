@@ -549,6 +549,111 @@ textarea.field.code { font: 11px/1.6 var(--mono); min-height: 260px; white-space
 .metric .metric-trend.up { color: var(--green) }
 .metric .metric-trend.down { color: var(--red) }
 
+/* Accueil « Ma journée » */
+.today-hero {
+  position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+  padding: 28px 30px; border-radius: 24px;
+}
+.today-hero::before {
+  content: ""; position: absolute; inset: -40% -10% auto auto; width: 420px; height: 420px; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--blue) 18%, transparent), transparent 65%); pointer-events: none;
+}
+.today-hero-main { position: relative; min-width: 0 }
+.today-date { display: inline-flex; gap: 6px; align-items: center; margin: 0; color: var(--blue); font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase }
+.today-hero h1 { margin: 8px 0 6px; font-size: clamp(24px, 3.4vw, 34px); letter-spacing: -.05em; line-height: 1.1 }
+.today-headline { margin: 0; max-width: 640px; color: var(--muted); font-size: 13px; line-height: 1.65 }
+.today-headline b { color: var(--ink) }
+.today-headline b.danger { color: var(--red) }
+.today-hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px }
+.today-progress { position: relative; display: grid; justify-items: center; gap: 6px }
+.today-ring { width: 118px; height: 118px; transform: rotate(-90deg) }
+.today-ring circle { fill: none; stroke-width: 8 }
+.ring-track { stroke: color-mix(in srgb, var(--muted) 16%, transparent) }
+.ring-fill { stroke: var(--blue); stroke-linecap: round; transition: stroke-dashoffset .8s var(--ease) }
+.ring-wrap { position: relative; line-height: 0 }
+.today-progress-label { position: absolute; inset: 0; display: grid; place-content: center; text-align: center }
+.today-progress-label strong { font-size: 24px; letter-spacing: -.05em; line-height: 1 }
+.today-progress-label span { font-size: 9.5px; color: var(--muted) }
+.today-progress p { margin: 0; font: 500 9px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em }
+
+.today-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px }
+.today-stat { display: flex; gap: 12px; align-items: center; padding: 16px; border-radius: 16px }
+.today-stat-icon { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; font-size: 19px }
+.today-stat small { display: block; color: var(--muted); font: 500 9px var(--mono); text-transform: uppercase; letter-spacing: .04em }
+.today-stat strong { display: block; margin: 3px 0 1px; font-size: 22px; letter-spacing: -.05em; line-height: 1.1 }
+.today-stat span { font-size: 10px; color: var(--muted) }
+.today-stat span.down { color: var(--red) }
+.today-stat span.up { color: var(--green) }
+
+.today-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; margin-top: 18px; align-items: start }
+.today-side { display: grid; gap: 18px }
+.card h2 i { margin-right: 7px; color: var(--blue); font-weight: normal }
+.today-muted { color: var(--muted); font-size: 11.5px }
+
+.objectives { display: grid; gap: 8px }
+.objective {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 14px;
+  border: 1px solid var(--hair); border-radius: 14px; background: var(--surface);
+  transition: transform .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.objective:hover { border-color: color-mix(in srgb, var(--blue) 30%, transparent); box-shadow: 0 8px 22px rgba(48, 46, 132, .07) }
+.objective.blocked { border-left: 3px solid var(--red) }
+.objective.done { opacity: .62 }
+.objective.done b { text-decoration: line-through }
+.objective-check { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 50%; background: none; color: var(--muted); font-size: 22px; cursor: pointer; transition: color .2s var(--ease), transform .2s var(--ease) }
+.objective-check:not(:disabled):hover { color: var(--green); transform: scale(1.12) }
+.objective.done .objective-check { color: var(--green); cursor: default }
+.objective-body { min-width: 0; cursor: pointer }
+.objective-top { display: flex; gap: 8px; align-items: center }
+.objective-top b { font-size: 12.5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+.objective-rank { flex: none; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 6px; background: color-mix(in srgb, var(--blue) 12%, transparent); color: var(--blue); font: 600 9.5px var(--mono) }
+.objective-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; margin-top: 5px; color: var(--muted); font-size: 10px }
+.objective-meta i { margin-right: 3px }
+.objective-side { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end }
+.objectives-sep { margin: 10px 0 2px; color: var(--muted); font: 500 9px var(--mono); text-transform: uppercase; letter-spacing: .08em }
+
+.now-card { display: grid; gap: 6px; padding: 14px; border-radius: 14px; background: color-mix(in srgb, var(--violet) 7%, var(--surface)); border: 1px solid color-mix(in srgb, var(--violet) 22%, transparent); cursor: pointer }
+.now-card + .now-card { margin-top: 8px }
+.now-card b { font-size: 13px }
+.now-card small { color: var(--muted); font-size: 10px }
+.now-live { display: inline-flex; gap: 6px; align-items: center; color: var(--violet); font: 600 9px var(--mono); text-transform: uppercase; letter-spacing: .08em }
+.now-live span { width: 7px; height: 7px; border-radius: 50%; background: var(--violet); animation: aiDot 1.6s infinite }
+.now-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; color: var(--muted); font-size: 10px }
+.now-empty { display: grid; gap: 10px; justify-items: start }
+.now-empty p { margin: 0; color: var(--muted); font-size: 11.5px }
+
+.alert-list { display: grid; gap: 7px }
+.alert-item {
+  display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 10px 12px; border: 0; border-radius: 12px;
+  background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; border-left: 3px solid transparent;
+}
+.alert-item.red { border-left-color: var(--red) }
+.alert-item.red i { color: var(--red) }
+.alert-item.amber { border-left-color: var(--amber) }
+.alert-item.amber i { color: var(--amber) }
+.alert-item i { font-size: 16px; margin-top: 1px }
+.alert-item span { display: grid; gap: 2px; min-width: 0 }
+.alert-item b { font-size: 11.5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
+.alert-item small { color: var(--muted); font-size: 10px }
+.all-clear { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--green) 9%, var(--surface)); color: var(--green); font-size: 11.5px }
+.all-clear i { font-size: 18px }
+.today-ai-text { font-size: 12px; line-height: 1.7 }
+.today-ai-text p { margin: 0 0 8px }
+.today-ai-text ul { margin: 4px 0 8px; padding-left: 18px }
+
+.agenda { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px }
+.agenda-col { display: grid; align-content: start; gap: 7px; padding: 12px; border-radius: 14px; background: color-mix(in srgb, var(--surface) 60%, transparent); border: 1px solid var(--hair) }
+.agenda-col.late { background: color-mix(in srgb, var(--red) 6%, var(--surface)); border-color: color-mix(in srgb, var(--red) 25%, transparent) }
+.agenda-col.late .agenda-head { color: var(--red) }
+.agenda-head { display: flex; gap: 6px; align-items: center; margin: 0 0 3px; font-size: 11px; font-weight: 700 }
+.agenda-head span { margin-left: auto; padding: 1px 7px; border-radius: 99px; background: var(--surface); color: var(--muted); font: 500 9.5px var(--mono) }
+.agenda-item { display: grid; gap: 4px; width: 100%; padding: 9px 10px; border: 0; border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: transform .2s var(--ease) }
+.agenda-item:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--blue) 8%, var(--surface)) }
+.agenda-item b { font-size: 11px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden }
+.agenda-item small { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; color: var(--muted); font-size: 9.5px }
+.agenda-item .chip { margin-left: auto }
+.agenda-empty, .agenda-more { margin: 0; color: var(--muted); font-size: 10px; text-align: center }
+
 .recent-list { display: grid; gap: 7px }
 .recent-item {
   display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center;
@@ -1054,6 +1159,8 @@ body[data-theme="midnight"] .code-block { background: rgba(8, 10, 22, .8) }
 }
 @media (max-width: 1080px) {
   .metrics { grid-template-columns: repeat(2, 1fr) }
+  .today-grid { grid-template-columns: 1fr }
+  .agenda { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) }
   .grid.two, .grid.three { grid-template-columns: 1fr }
   .member-card { grid-template-columns: 42px 1fr; grid-auto-rows: auto }
   .member-stats, .member-actions { grid-column: 1 / -1 }
@@ -1073,6 +1180,15 @@ body[data-theme="midnight"] .code-block { background: rgba(8, 10, 22, .8) }
   .progress-row { grid-template-columns: 1fr; gap: 5px }
   .progress-row span { text-align: left }
   .brief-doc { padding: 20px }
+  .today-hero { grid-template-columns: 1fr; padding: 22px 18px }
+  .today-progress { grid-template-columns: auto 1fr; justify-items: start; align-items: center }
+  .today-ring { width: 84px; height: 84px }
+  .today-progress-label strong { font-size: 18px }
+  .today-stats { grid-template-columns: repeat(2, 1fr) }
+  .today-stat { padding: 12px; gap: 9px }
+  .today-stat-icon { width: 34px; height: 34px; font-size: 16px }
+  .objective { grid-template-columns: auto 1fr; padding: 11px }
+  .objective-side { grid-column: 1 / -1; justify-content: flex-start }
   .ai-app { grid-template-columns: 1fr; height: calc(100dvh - 170px) }
   .ai-sidebar {
     position: absolute; inset: 0 auto 0 0; z-index: 5; width: min(290px, 86%);

@@ -107,55 +107,55 @@
     <main>
       <!-- ------------------------------------------------ tableau de bord -->
       <section class="view active" id="view-dashboard">
-        <header class="page-head">
-          <div>
-            <p class="eyebrow">Vue d'ensemble</p>
-            <h1>L'état de tes projets.</h1>
-            <p>Avancement, blocages et livraisons en attente de revue, pour tout ce que ton compte peut voir.</p>
-          </div>
-          <div class="head-actions">
-            <div class="section-project-picker" id="dashboardProjectPicker"></div>
-            <button class="btn" data-go="board"><i class="ri-kanban-view-2"></i>Ouvrir le board</button>
-            <button class="btn primary manager-only" data-action="new-task" hidden><i class="ri-add-line"></i>Nouvelle tâche</button>
-            <button class="btn primary dev-only" data-action="new-submission"><i class="ri-upload-cloud-2-line"></i>Livrer du code</button>
-          </div>
-        </header>
+        <section class="today-hero glass" id="todayHero"></section>
 
-        <section class="summary-hero glass">
-          <div class="ai-orb"><i class="ri-sparkling-2-line"></i></div>
-          <div>
-            <small>Point d'avancement</small>
-            <p id="standupText">Demande un point d'avancement pour obtenir une lecture synthétique de la situation.</p>
-          </div>
-          <button class="btn" type="button" id="standupRefresh"><i class="ri-refresh-line"></i>Générer</button>
-        </section>
+        <div class="today-stats" id="dashboardMetrics"></div>
 
-        <div class="metrics" id="dashboardMetrics"></div>
-
-        <div class="grid two" style="margin-top:18px">
-          <section class="card glass">
+        <div class="today-grid">
+          <section class="card glass today-focus">
             <div class="card-head">
-              <div><h2>Mes tâches</h2><p>Ce qui t'est assigné, du plus urgent au moins urgent.</p></div>
-              <button class="btn" data-go="tasks">Voir tout</button>
+              <div><h2><i class="ri-focus-3-line"></i>Objectifs du jour</h2><p>Ce qui doit avancer aujourd'hui, par ordre d'importance.</p></div>
+              <div class="head-actions">
+                <div class="section-project-picker" id="dashboardProjectPicker"></div>
+              </div>
             </div>
             <div id="dashboardTasks"></div>
           </section>
-          <section class="card glass">
-            <div class="card-head">
-              <div><h2>Livraisons à examiner</h2><p>Code soumis, en attente ou en retour de revue.</p></div>
-              <button class="btn" data-go="reviews">Revues</button>
-            </div>
-            <div id="dashboardSubmissions"></div>
-          </section>
+
+          <div class="today-side">
+            <section class="card glass" id="todayNowCard">
+              <div class="card-head"><div><h2><i class="ri-play-circle-line"></i>En ce moment</h2><p>La tâche sur laquelle tu travailles.</p></div></div>
+              <div id="todayNow"></div>
+            </section>
+            <section class="card glass">
+              <div class="card-head"><div><h2><i class="ri-alarm-warning-line"></i>Points d'attention</h2><p>Blocages et retours de revue à traiter.</p></div></div>
+              <div id="todayAlerts"></div>
+            </section>
+            <section class="card glass today-ai">
+              <div class="card-head">
+                <div><h2><i class="ri-sparkling-2-line"></i>Point d'avancement IA</h2><p>Synthèse de la situation du projet.</p></div>
+                <button class="btn" type="button" id="standupRefresh"><i class="ri-refresh-line"></i>Générer</button>
+              </div>
+              <div class="today-ai-text" id="standupText"></div>
+            </section>
+          </div>
         </div>
+
+        <section class="card glass" style="margin-top:18px">
+          <div class="card-head">
+            <div><h2><i class="ri-calendar-schedule-line"></i>Mon planning</h2><p>Tes tâches ouvertes classées par échéance.</p></div>
+            <button class="btn" data-go="tasks">Toutes mes tâches</button>
+          </div>
+          <div class="agenda" id="todayAgenda"></div>
+        </section>
 
         <div class="grid two" style="margin-top:18px">
           <section class="card glass">
             <div class="card-head">
-              <div><h2>Avancement par projet</h2><p>Part des tâches terminées sur chaque projet actif.</p></div>
-              <button class="btn" data-go="projects">Projets</button>
+              <div><h2 id="submissionsTitle">Livraisons à examiner</h2><p id="submissionsHint">Code soumis, en attente ou en retour de revue.</p></div>
+              <button class="btn" data-go="reviews">Revues</button>
             </div>
-            <div id="dashboardProjects"></div>
+            <div id="dashboardSubmissions"></div>
           </section>
           <section class="card glass">
             <div class="card-head">
@@ -164,6 +164,14 @@
             <div id="dashboardActivity"></div>
           </section>
         </div>
+
+        <section class="card glass" style="margin-top:18px">
+          <div class="card-head">
+            <div><h2>Avancement par projet</h2><p>Part des tâches terminées sur chaque projet actif.</p></div>
+            <button class="btn" data-go="projects">Projets</button>
+          </div>
+          <div id="dashboardProjects"></div>
+        </section>
       </section>
 
       <!-- ----------------------------------------------------------- brief -->
